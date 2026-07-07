@@ -99,10 +99,26 @@ const products = [
 
 const seed = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    const primaryMongoUri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/shop-ease";
+    const fallbackMongoUri = "mongodb://127.0.0.1:27017/shop-ease";
+
+    const connectWithFallback = async (uri) => {
+      try {
+        await mongoose.connect(uri, {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+          serverSelectionTimeoutMS: 3000
+        });
+        return uri;
+      } catch (err) {
+        if (uri !== fallbackMongoUri) {
+          return connectWithFallback(fallbackMongoUri);
+        }
+        throw err;
+      }
+    };
+
+    await connectWithFallback(primaryMongoUri);
     await Product.deleteMany({});
     await Product.insertMany(products);
     console.log("Seeded products successfully.");
