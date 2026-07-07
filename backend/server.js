@@ -12,7 +12,7 @@ const orderRoutes = require("./routes/order");
 dotenv.config();
 const app = express();
 
-const allowedOrigins = process.env.CORS_ORIGIN
+const allowedOrigins = process.env.CORS_ORIGIN 
   ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
   : true;
 
@@ -31,17 +31,18 @@ const connectToDatabase = async (uri) => {
     await mongoose.connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 3000
+      serverSelectionTimeoutMS: 5000
     });
-    console.log(`MongoDB Connected to ${uri}`);
+    console.log(`✓ MongoDB Connected to ${uri.substring(0, 50)}...`);
   } catch (err) {
     if (uri !== fallbackMongoUri) {
-      console.warn("Primary MongoDB connection failed, trying local fallback...");
+      console.warn("⚠ Primary MongoDB connection failed, trying local fallback...");
       await connectToDatabase(fallbackMongoUri);
       return;
     }
 
-    console.error("MongoDB connection error:", err.message);
+    console.error("✗ MongoDB connection error:", err.message);
+    console.warn("⚠ Running without database. Set MONGO_URI environment variable for full functionality.");
   }
 };
 
