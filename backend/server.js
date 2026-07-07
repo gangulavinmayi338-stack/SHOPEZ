@@ -14,9 +14,14 @@ const app = express();
 
 const allowedOrigins = process.env.CORS_ORIGIN 
   ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
-  : true;
+  : ["http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:5173"];
 
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+app.use(
+  cors({
+    origin: process.env.NODE_ENV === "production" ? allowedOrigins : true,
+    credentials: true
+  })
+);
 app.use(express.json());
 
 app.get("/health", (_req, res) => {
