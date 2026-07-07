@@ -11,7 +11,11 @@ import Checkout from "./pages/Checkout.jsx";
 import Orders from "./pages/Orders.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 
-axios.defaults.baseURL = import.meta.env.VITE_API_URL || "/api";
+axios.defaults.baseURL = import.meta.env.VITE_API_URL 
+  ? import.meta.env.VITE_API_URL.endsWith('/api') 
+    ? import.meta.env.VITE_API_URL 
+    : `${import.meta.env.VITE_API_URL}/api`
+  : "/api";
 if (import.meta.env.MODE === "development") {
   console.log("API Base URL:", axios.defaults.baseURL);
 }
