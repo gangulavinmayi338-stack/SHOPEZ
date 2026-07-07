@@ -12,6 +12,9 @@ import Orders from "./pages/Orders.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL || "/api";
+if (import.meta.env.MODE === "development") {
+  console.log("API Base URL:", axios.defaults.baseURL);
+}
 
 function App() {
   const [auth, setAuth] = useState({ token: null, user: null });
